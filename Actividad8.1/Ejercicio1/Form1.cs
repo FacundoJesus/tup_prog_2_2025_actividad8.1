@@ -10,6 +10,7 @@ namespace Ejercicio1
         }
 
         List<Cuenta> cuentas = new List<Cuenta>();
+
         private void btnConfirmar_Click(object sender, EventArgs e)
         {
             string nombre = tbNombre.Text;
@@ -37,6 +38,7 @@ namespace Ejercicio1
             #endregion
         }
 
+
         private void btnActualizar_Click(object sender, EventArgs e)
         {
             lsbResult.Items.Clear();
@@ -45,6 +47,7 @@ namespace Ejercicio1
                 lsbResult.Items.Add(c);
             }
         }
+
 
         private void lsbResult_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -57,6 +60,7 @@ namespace Ejercicio1
 
             }
         }
+
 
         private void btnImportar_Click(object sender, EventArgs e)
         {
@@ -92,7 +96,6 @@ namespace Ejercicio1
                             cuentas.Add(c);
                         }
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -106,6 +109,7 @@ namespace Ejercicio1
                 btnActualizar.PerformClick();
             }
         }
+
 
         private void btnExportar_Click(object sender, EventArgs e)
         {
