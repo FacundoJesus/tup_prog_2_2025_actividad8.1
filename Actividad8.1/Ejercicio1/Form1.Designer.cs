@@ -143,6 +143,7 @@
             btnExportar.TabIndex = 10;
             btnExportar.Text = "Exportar";
             btnExportar.UseVisualStyleBackColor = true;
+            btnExportar.Click += btnExportar_Click;
             // 
             // Form1
             // 

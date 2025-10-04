@@ -28,6 +28,7 @@ namespace Ejercicio1
             {
                 cuentas.Add(nuevaCuenta);
             }
+            btnActualizar.PerformClick();
 
             #region Limpio campos
             tbNombre.Clear();
@@ -59,30 +60,88 @@ namespace Ejercicio1
 
         private void btnImportar_Click(object sender, EventArgs e)
         {
-            if(openFileDialog1.ShowDialog() == DialogResult.OK)
+            openFileDialog1.Filter = "Archivos TXT|*.txt|Todos los archivos|*.*";
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 string path = openFileDialog1.FileName;
-
-                FileStream fs = new FileStream(path,FileMode.Open,FileAccess.Read);
-                StreamReader sr = new StreamReader(fs);
-
-                while(!sr.EndOfStream)
+                FileStream fs = null;
+                StreamReader sr = null;
+                
+                try
                 {
-                    string linea = sr.ReadLine();
+                    fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                    sr = new StreamReader(fs);
+                    while (!sr.EndOfStream)
+                    {
+                        string linea = sr.ReadLine();
 
-                    string dni = linea.Substring(0, 9);
-                    string nombre = linea.Substring(9,10).Trim();
-                    string importe = linea.Substring(19, 9);
+                        string dni = linea.Substring(0, 9).Trim();
+                        string nombre = linea.Substring(9, 10).Trim();
+                        string importe = linea.Substring(19, 9).Trim();
 
-                    Cuenta c = new Cuenta(nombre, Convert.ToInt32(dni), Convert.ToInt32(importe));
-
-                    //BUSCARLO ORDENARLO Y SI NO EXISTE CREARLO
-
-
+                        Cuenta c = new Cuenta(nombre, Convert.ToInt32(dni), Convert.ToDouble(importe));
+                        cuentas.Sort();
+                        int idx = cuentas.BinarySearch(c);
+                        if (idx > -1)
+                        {
+                            cuentas[idx].Nombre = c.Nombre;
+                            cuentas[idx].Importe = c.Importe;
+                        }
+                        else
+                        {
+                            cuentas.Add(c);
+                        }
+                        
+                    }
 
                 }
-
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    if (sr != null) { sr.Close(); }
+                    if (fs != null) { fs.Close(); }
+                }
+                btnActualizar.PerformClick();
             }
         }
+
+        private void btnExportar_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.Filter = "Archivos TXT|*.txt|Todos los archivos|*.*";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK) { 
+                string path = saveFileDialog1.FileName;
+                FileStream fs = null;
+                StreamWriter sw = null;
+                try
+                {
+                    fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+                    sw = new StreamWriter(fs);
+                    foreach(Cuenta c in cuentas)
+                    {
+                        string nombre = c.Nombre;
+                        if(nombre.Length > 10)
+                        {
+                            nombre = c.Nombre.Substring(0, 10);
+                        }
+                        string linea = $"{c.DNI,+9}{nombre,-10}{c.Importe,+9:f2}";
+                        sw.WriteLine(linea);
+                    }
+                }catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    if(sw!=null) sw.Close();
+                    if (fs != null) fs.Close();
+                }
+            }
+        }
+
+
+        
     }
 }
