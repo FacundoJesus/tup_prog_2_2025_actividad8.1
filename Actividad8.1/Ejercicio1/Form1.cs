@@ -91,7 +91,6 @@ namespace Ejercicio1
                         {
                             cuentas.Add(c);
                         }
-                        
                     }
 
                 }
